@@ -2,6 +2,7 @@
 
 using System.Diagnostics.Contracts;
 using EspacioCalculadora;
+using EspacioEmpresa;
 
 Calculadora calcu = new Calculadora();
 
@@ -73,19 +74,15 @@ if (!double.TryParse(Console.ReadLine(), out double num1))
             {
                 if (opcion == 1)
                 {
-                    calcu.Limpiar();
-                    Console.WriteLine("Ingresar primer numero: ");
-                    if (!double.TryParse(Console.ReadLine(), out num1))
+                    Console.WriteLine("Ingresar otro valor: ");
+                    if (!int.TryParse(Console.ReadLine(), out int numero))
                     {
                         Console.WriteLine("El valor ingresado no es valido");
                         return;
                     }
-                    Console.WriteLine("Ingresar otro numero: ");
-                    if (!double.TryParse(Console.ReadLine(), out num2))
-                    {
-                        Console.WriteLine("El valor ingresado no es valido");
-                        return;
-                    }
+
+                    Console.WriteLine("Realizarle a: "+cal.Resultado);
+                    
                     Console.WriteLine("(1)Suma");
                     Console.WriteLine("(2)Resta");
                     Console.WriteLine("(3)Multiplicacion");
@@ -132,4 +129,62 @@ if (!double.TryParse(Console.ReadLine(), out double num1))
         }while(opcion != 0);
     }
 }
+
+//punto 2
+Empleado[] empleados = new Empleado[3];
+
+for (int i = 0; i < empleados.Length; i++)
+{
+    Console.WriteLine("CARGAR DATOS DEL EMPLEADO "+(i+1)+":");
+
+    Console.WriteLine("Nombre: ");
+    string nombre = Console.ReadLine();
+    Console.WriteLine("Apellido: ");
+    string apellido = Console.ReadLine();
+    Console.WriteLine("Fecha de nacimiento (dd/mm/aaaa): ");
+    DateTime fechaDeNacimiento = DateTime.ParseExact(Console.ReadLine(), "dd/MM/yyyy", null);
+    Console.WriteLine("Estado civil (s)soltera/o, (c)casada/o");
+    char estadoCivil = Console.ReadLine()[0];
+    Console.WriteLine("Fecha de ingreso en la empresa (dd/mm/aaaa): ");
+    DateTime fechaIngreso = DateTime.ParseExact(Console.ReadLine(), "dd/MM/yyyy", null);
+
+    Console.WriteLine("Sueldo Básico: ");
+    double sueldoBasico = double.Parse(Console.ReadLine());
+
+    Console.WriteLine("Cargo (Auxiliar, Administrativo, Ingeniero, Especialista, Investigador): ");
+    Cargos cargo = (Cargos)Enum.Parse(typeof(Cargos), Console.ReadLine());
+
+    // Crear instancia de Empleado y asignar los valores ingresados
+    Empleado empleado = new Empleado(nombre, apellido, fechaDeNacimiento , estadoCivil, fechaIngreso, sueldoBasico, cargo);
+
+    // Agregar el empleado al arreglo
+    empleados[i] = empleado;
+
+    Console.WriteLine();
+}
+
+double montoTotalDeSalarios =  0;
+foreach (Empleado empl in empleados)
+{
+    montoTotalDeSalarios = montoTotalDeSalarios + empl.CalcularSalario();
+}
+
+Empleado emplProxAJubilarse = empleados[0];
+foreach (Empleado empl in empleados)
+{
+    if (empl.cantidadDeAniosParaJubilarse < emplProxAJubilarse.cantidadDeAniosParaJubilarse)
+    {
+        emplProxAJubilarse = empl;
+    }
+}
+
+Console.WriteLine("-------------RESULTADOS--------------");
+Console.WriteLine("Empleado mas proximo a jubilarse: ");
+Console.WriteLine("Nombre: "+ emplProxAJubilarse.Nombre);
+Console.WriteLine("Apellido: "+emplProxAJubilarse.Apellido);
+Console.WriteLine("Edad: "+emplProxAJubilarse.edadDeEmpleado);
+Console.WriteLine("Años para jubilarse: "+ emplProxAJubilarse.cantidadDeAniosParaJubilarse);
+Console.WriteLine("Salario: "+ emplProxAJubilarse.CalcularSalario());
+
+Console.WriteLine("Monto total de salarios: "+montoTotalDeSalarios);
 
